@@ -38,7 +38,9 @@ export function useSubjectLift(): UseSubjectLiftReturn {
     if (s === 'ready') {
       setStatus('ready');
       setError(null);
-      if (base64) setMaskedBase64(base64);
+      if (base64) {
+        setMaskedBase64(base64);
+      }
     } else {
       setStatus('error');
       setError(message ?? 'Unknown error during analysis');

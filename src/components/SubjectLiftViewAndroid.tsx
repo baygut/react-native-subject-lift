@@ -16,8 +16,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import type { SubjectLiftViewProps, AnalysisCompleteEvent } from '../types';
 
-const NativeSegmentationView =
-  requireNativeComponent<SubjectLiftViewProps>('SubjectLiftViewManager');
+const NativeSegmentationView = requireNativeComponent<SubjectLiftViewProps>(
+  'SubjectLiftViewManager'
+);
 
 export function SubjectLiftViewAndroid({
   imageUri,
@@ -67,11 +68,7 @@ export function SubjectLiftViewAndroid({
       {maskedBase64 && (
         <Animated.Image
           source={{ uri: `data:image/png;base64,${maskedBase64}` }}
-          style={[
-            StyleSheet.absoluteFill,
-            styles.subject,
-            liftStyle,
-          ]}
+          style={[StyleSheet.absoluteFill, styles.subject, liftStyle]}
           resizeMode="contain"
         />
       )}

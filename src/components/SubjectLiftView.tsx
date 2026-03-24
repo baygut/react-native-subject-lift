@@ -27,10 +27,7 @@ import type { SubjectLiftViewProps } from '../types';
 export function SubjectLiftView(props: SubjectLiftViewProps) {
   if (Platform.OS === 'ios') {
     return (
-      <NativeSubjectLiftView
-        {...props}
-        style={[styles.fill, props.style]}
-      />
+      <NativeSubjectLiftView {...props} style={[styles.fill, props.style]} />
     );
   }
 

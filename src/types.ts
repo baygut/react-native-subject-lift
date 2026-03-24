@@ -1,4 +1,4 @@
-import type { ViewStyle } from 'react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
 
 export type AnalysisStatus = 'idle' | 'analyzing' | 'ready' | 'error';
 
@@ -27,5 +27,5 @@ export type SubjectLiftViewProps = {
   /** Called when VisionKit analysis (iOS) or ML Kit segmentation (Android) completes */
   onAnalysisComplete?: (event: AnalysisCompleteEvent) => void;
 
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };
