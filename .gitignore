@@ -1,0 +1,19 @@
+node_modules/
+lib/
+*.tgz
+
+# iOS
+ios/build/
+*.xcworkspace
+Pods/
+
+# Android
+android/build/
+android/.gradle/
+*.class
+*.apk
+
+# General
+.DS_Store
+.env
+coverage/

@@ -1,0 +1,78 @@
+{
+  "name": "react-native-subject-lift",
+  "version": "0.1.0",
+  "description": "Native subject lift (Select Subject) for React Native — VisionKit on iOS, ML Kit on Android",
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "types": "lib/typescript/src/index.d.ts",
+  "source": "src/index.ts",
+  "files": [
+    "src",
+    "lib",
+    "ios",
+    "android",
+    "react-native-subject-lift.podspec",
+    "react-native.config.js",
+    "!lib/typescript/example",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "scripts": {
+    "build": "bob build",
+    "prepare": "bob build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "test": "jest"
+  },
+  "keywords": [
+    "react-native",
+    "ios",
+    "android",
+    "visionkit",
+    "subject-lift",
+    "select-subject",
+    "ml-kit",
+    "segmentation",
+    "background-removal"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baygut/react-native-subject-lift.git"
+  },
+  "author": "Berkay Baygut <berkay@berkaybaygut.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/baygut/react-native-subject-lift/issues"
+  },
+  "homepage": "https://github.com/baygut/react-native-subject-lift#readme",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-reanimated": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@react-native/eslint-config": "^0.74.0",
+    "@types/react": "~18.2.0",
+    "@types/react-native": "~0.74.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "react": "18.2.0",
+    "react-native": "0.74.0",
+    "react-native-builder-bob": "^0.23.0",
+    "typescript": "^5.0.0"
+  },
+  "jest": {
+    "preset": "react-native",
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      ["typescript", { "project": "tsconfig.build.json" }]
+    ]
+  }
+}

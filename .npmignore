@@ -1,0 +1,9 @@
+example/
+.github/
+*.test.*
+__tests__/
+__mocks__/
+.eslintrc*
+tsconfig*.json
+babel.config.js
+jest.config.js
