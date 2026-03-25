@@ -16,9 +16,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import type { SubjectLiftViewProps, AnalysisCompleteEvent } from '../types';
 
-const NativeSegmentationView = requireNativeComponent<SubjectLiftViewProps>(
-  'SubjectLiftView'
-);
+const NativeSegmentationView =
+  requireNativeComponent<SubjectLiftViewProps>('SubjectLiftView');
 
 export function SubjectLiftViewAndroid({
   imageUri,
