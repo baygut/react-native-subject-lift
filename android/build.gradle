@@ -24,8 +24,9 @@ repositories {
 
 dependencies {
   implementation "com.facebook.react:react-native:+"
-  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  // Host app may define kotlinVersion (RN template) or kotlin_version — never rely on a bare $kotlin_version.
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:${safeExtGet('kotlinVersion', safeExtGet('kotlin_version', '1.9.22'))}"
 
-  // ML Kit Subject Segmentation
-  implementation 'com.google.mlkit:subject-segmentation:16.0.0-beta5'
+  // ML Kit Subject Segmentation (Play Services–delivered; see ML Kit Android docs)
+  implementation 'com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1'
 }

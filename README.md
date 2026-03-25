@@ -1,51 +1,31 @@
 # react-native-subject-lift
 
-Native subject lift for React Native — the "Select Subject" experience from Photos.app, available in your app.
+Bring **Select Subject**–style interactions into React Native: iOS uses VisionKit (same stack as Photos), Android uses ML Kit segmentation plus a Reanimated lift animation.
 
-- **iOS 16+** — powered by Apple's VisionKit `ImageAnalysisInteraction`. Full native UX: long-press glow, lift animation, copy/share sheet. Zero JS overhead.
-- **Android 7+** — powered by Google ML Kit `SubjectSegmenter`. Segments the foreground subject and plays a Reanimated spring lift animation.
+| | iOS 16+ | Android 7+ (API 24+) |
+|---|:---:|:---:|
+| Engine | VisionKit `ImageAnalysisInteraction` | ML Kit Subject Segmenter |
+| UX | System lift, Live Text, Visual Look Up | Custom lift animation |
 
----
-
-## Preview
-
-| iOS (VisionKit) | Android (ML Kit + Reanimated) |
-|---|---|
-| System lift UX — identical to Photos.app | Animated foreground lift over blurred background |
-
----
-
-## Installation
+## Install
 
 ```sh
 npm install react-native-subject-lift
 ```
 
-### iOS
+**iOS** — `cd ios && pod install`. Deployment target **16.0**.
 
-```sh
-cd ios && pod install
-```
-
-Minimum deployment target: **iOS 16.0**
-
-In your `Info.plist`, no special permissions are needed for local images. For remote images over HTTP, ensure `NSAppTransportSecurity` is configured.
-
-### Android
-
-Add the ML Kit dependency to your `android/app/build.gradle`:
+**Android** — add to `android/app/build.gradle`:
 
 ```gradle
 dependencies {
-  implementation 'com.google.mlkit:subject-segmentation:16.0.0-beta5'
+  implementation 'com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1'
 }
 ```
 
-ML Kit downloads the segmentation model on first use via Google Play Services.
+`react-native-reanimated` ≥ 3 is a **peer dependency** (used on Android).
 
----
-
-## Usage
+## Quick start
 
 ```tsx
 import { SubjectLiftView, useSubjectLift } from 'react-native-subject-lift';
@@ -54,101 +34,57 @@ export function PhotoScreen({ imageUri }: { imageUri: string }) {
   const { isReady, status, handleAnalysisComplete } = useSubjectLift();
 
   return (
-    <View style={{ flex: 1 }}>
-      <SubjectLiftView
-        imageUri={imageUri}
-        style={{ flex: 1 }}
-        onAnalysisComplete={handleAnalysisComplete}
-      />
-      {status === 'analyzing' && <ActivityIndicator />}
-    </View>
+    <SubjectLiftView
+      imageUri={imageUri}
+      style={{ flex: 1 }}
+      onAnalysisComplete={handleAnalysisComplete}
+      onSubjectLifted={({ nativeEvent }) => {
+        // nativeEvent.type + nativeEvent.data — see below
+      }}
+    />
   );
 }
 ```
 
-### iOS — interaction types
+### iOS — `preferredInteractionTypes`
 
-```tsx
-// Default: subject lift + Live Text + Visual Look Up (same as Photos.app)
-<SubjectLiftView
-  imageUri={imageUri}
-  preferredInteractionTypes="automatic"
-/>
-
-// Subject lift only — no Live Text, no Visual Look Up
-<SubjectLiftView
-  imageUri={imageUri}
-  preferredInteractionTypes="subjectLiftOnly"
-/>
-```
-
----
+- **`automatic`** (default) — subject lift, Live Text, Visual Look Up, QR/barcode detection.
+- **`subjectLiftOnly`** — subject lift only.
 
 ## API
 
-### `<SubjectLiftView />`
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `imageUri` | `string` | required | Image URI (`file://` or `https://`) |
-| `preferredInteractionTypes` | `'automatic' \| 'subjectLiftOnly'` | `'automatic'` | iOS only — which VisionKit interactions to enable |
-| `onAnalysisComplete` | `(event) => void` | — | Fired when analysis finishes |
-| `style` | `ViewStyle` | — | Standard RN style prop |
-
-#### `onAnalysisComplete` event
-
-```ts
-{
-  nativeEvent: {
-    status: 'ready' | 'error';
-    base64?: string;   // Android only — base64 PNG of segmented subject
-    message?: string;  // Error message if status === 'error'
-  }
-}
-```
+| Prop | Description |
+|------|-------------|
+| `imageUri` | `file://` or `https://` image URI |
+| `preferredInteractionTypes` | iOS only — see above |
+| `onAnalysisComplete` | Analysis finished (`ready` / `error`; Android may include `base64` preview) |
+| `onSubjectLifted` | Optional — gesture / cutout / text payloads (see [src/types.ts](src/types.ts)) |
+| `style` | `ViewStyle` |
 
 ### `useSubjectLift()`
 
-```ts
-const {
-  status,          // 'idle' | 'analyzing' | 'ready' | 'error'
-  isReady,         // boolean — true when lift is ready to interact
-  error,           // string | null
-  maskedBase64,    // string | null — Android only
-  handleAnalysisComplete,  // pass to onAnalysisComplete prop
-  reset,           // reset back to idle
-} = useSubjectLift();
-```
+Returns `status`, `isReady`, `error`, `maskedBase64` (Android), `handleAnalysisComplete`, and `reset`.
 
----
+## `onSubjectLifted` (iOS)
 
-## Platform notes
+Shape: `{ nativeEvent: { type: string, data: string } }`. Full detail is in the `SubjectLiftedEvent` JSDoc in [`src/types.ts`](src/types.ts).
 
-| | iOS | Android |
-|---|---|---|
-| Minimum version | iOS 16 | API 24 (Android 7) |
-| Native UX | ✅ Full system UX | ❌ JS animation via Reanimated |
-| On-device | ✅ | ✅ (model downloaded once) |
-| Remote images | ✅ | ✅ |
-| `preferredInteractionTypes` | ✅ | Ignored |
-| `base64` in event | ❌ | ✅ |
+- **`image`** — JSON when a lift gesture starts; **base64 PNG** when the subject cutout is ready (timing varies; VisionKit does not guarantee a bitmap at gesture start).
+- **`text`** — iOS 17+: JSON `selectionBegan` with selected text when selection first has content; **plain string** when the selection ends.
+- **`dataDetector` / `interaction`** — began-phase JSON for other interaction kinds.
+- **QR/barcodes** — detected in analysis and shown in system Live Text / data-detector UI; there is no separate “QR subject lift” bitmap event.
 
----
+On **Android**, `onSubjectLifted` fires with `type: "image"` and base64 when segmentation succeeds.
+
+## Notes
+
+- Subject lift on iOS is meant for **real devices** (A12+); the Simulator is often unreliable.
+- Use photos with a clear foreground subject; not every image will segment.
+- Remote HTTP images need appropriate App Transport Security on iOS.
 
 ## Requirements
 
-- React Native >= 0.72
-- react-native-reanimated >= 3.0.0 (Android only, peer dependency)
-- iOS 16+ deployment target
-- Android minSdkVersion 24+
-
----
-
-## Contributing
-
-Issues and PRs are welcome. Please open an issue before submitting large changes.
-
----
+React Native ≥ 0.72 · iOS 16+ · Android minSdk 24 · Reanimated ≥ 3 (Android)
 
 ## License
 

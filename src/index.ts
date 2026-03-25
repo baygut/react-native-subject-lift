@@ -5,4 +5,5 @@ export type {
   AnalysisCompleteEvent,
   AnalysisStatus,
   InteractionType,
+  SubjectLiftedEvent,
 } from './types';

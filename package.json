@@ -1,6 +1,6 @@
 {
   "name": "react-native-subject-lift",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Native subject lift (Select Subject) for React Native — VisionKit on iOS, ML Kit on Android",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -11,6 +11,8 @@
     "lib",
     "ios",
     "android",
+    "!android/build",
+    "!android/.gradle",
     "react-native-subject-lift.podspec",
     "react-native.config.js",
     "!lib/typescript/example",
@@ -23,7 +25,10 @@
     "prepare": "bob build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "test": "jest"
+    "test": "jest",
+    "example:start": "npm start --prefix example",
+    "example:ios": "npm run ios --prefix example",
+    "example:android": "npm run android --prefix example"
   },
   "keywords": [
     "react-native",

@@ -9,7 +9,7 @@ import com.facebook.react.uimanager.annotations.ReactProp
 
 class SubjectLiftViewManager : SimpleViewManager<SubjectLiftView>() {
 
-  override fun getName() = "SubjectLiftViewManager"
+  override fun getName() = "SubjectLiftView"
 
   override fun createViewInstance(reactContext: ThemedReactContext): SubjectLiftView {
     val view = SubjectLiftView(reactContext)

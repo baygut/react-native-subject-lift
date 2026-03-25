@@ -17,13 +17,14 @@ import Animated, {
 import type { SubjectLiftViewProps, AnalysisCompleteEvent } from '../types';
 
 const NativeSegmentationView = requireNativeComponent<SubjectLiftViewProps>(
-  'SubjectLiftViewManager'
+  'SubjectLiftView'
 );
 
 export function SubjectLiftViewAndroid({
   imageUri,
   style,
   onAnalysisComplete,
+  onSubjectLifted,
 }: SubjectLiftViewProps) {
   const [maskedBase64, setMaskedBase64] = useState<string | null>(null);
 
@@ -49,10 +50,11 @@ export function SubjectLiftViewAndroid({
       if (status === 'ready' && base64) {
         setMaskedBase64(base64);
         triggerLiftAnimation();
+        onSubjectLifted?.({ nativeEvent: { type: 'image', data: base64 } });
       }
       onAnalysisComplete?.(event);
     },
-    [onAnalysisComplete, triggerLiftAnimation]
+    [onAnalysisComplete, onSubjectLifted, triggerLiftAnimation]
   );
 
   return (

@@ -22,6 +22,9 @@ import type { SubjectLiftViewProps } from '../types';
  *   onAnalysisComplete={({ nativeEvent }) => {
  *     if (nativeEvent.status === 'ready') console.log('Ready to lift!');
  *   }}
+ *   onSubjectLifted={({ nativeEvent }) => {
+ *     const { type, data } = nativeEvent;
+ *   }}
  * />
  */
 export function SubjectLiftView(props: SubjectLiftViewProps) {
