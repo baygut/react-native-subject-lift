@@ -38,6 +38,8 @@ type LiftLogEntry = {
   clipUri?: string;
 };
 
+const fail_this_commit = true;
+
 function summarizeLiftEvent(type: string, data: string): Omit<LiftLogEntry, 'id' | 'at'> {
   if (type === 'image') {
     const trimmed = data.trimStart();
