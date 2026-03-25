@@ -24,7 +24,8 @@ import {
 
 /** Public HTTPS image — works on simulator/device with network */
 // const SAMPLE_IMAGE_URI = 'https://posterspy.com/wp-content/uploads/2025/04/SPIDER-MAN-BRAND-NEW-DAY.jpg';
-const SAMPLE_IMAGE_URI = 'https://www.labelplanet.co.uk/_cache/og_faq_glossary/1200x630/qr-code-235.jpg';
+const SAMPLE_IMAGE_URI =
+  'https://www.labelplanet.co.uk/_cache/og_faq_glossary/1200x630/qr-code-235.jpg';
 
 const MAX_LOG_ENTRIES = 80;
 
@@ -38,9 +39,10 @@ type LiftLogEntry = {
   clipUri?: string;
 };
 
-const fail_this_commit = true;
-
-function summarizeLiftEvent(type: string, data: string): Omit<LiftLogEntry, 'id' | 'at'> {
+function summarizeLiftEvent(
+  type: string,
+  data: string,
+): Omit<LiftLogEntry, 'id' | 'at'> {
   if (type === 'image') {
     const trimmed = data.trimStart();
     const isLikelyBase64 = data.length > 80 && !trimmed.startsWith('{');
@@ -56,8 +58,7 @@ function summarizeLiftEvent(type: string, data: string): Omit<LiftLogEntry, 'id'
     return {
       kind: 'image',
       summary: 'Gesture / metadata',
-      detail:
-        data.length > 160 ? `${data.slice(0, 160)}…` : data || '(empty)',
+      detail: data.length > 160 ? `${data.slice(0, 160)}…` : data || '(empty)',
     };
   }
   if (type === 'text') {
@@ -100,16 +101,19 @@ function App(): React.JSX.Element {
   const {status, error, isReady, handleAnalysisComplete} = useSubjectLift();
   const [liftLog, setLiftLog] = useState<LiftLogEntry[]>([]);
 
-  const handleSubjectLifted = useCallback(({nativeEvent}: SubjectLiftedEvent) => {
-    const {type, data} = nativeEvent;
-    const partial = summarizeLiftEvent(type, data);
-    const entry: LiftLogEntry = {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-      at: new Date().toLocaleTimeString(),
-      ...partial,
-    };
-    setLiftLog(prev => [entry, ...prev].slice(0, MAX_LOG_ENTRIES));
-  }, []);
+  const handleSubjectLifted = useCallback(
+    ({nativeEvent}: SubjectLiftedEvent) => {
+      const {type, data} = nativeEvent;
+      const partial = summarizeLiftEvent(type, data);
+      const entry: LiftLogEntry = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+        at: new Date().toLocaleTimeString(),
+        ...partial,
+      };
+      setLiftLog(prev => [entry, ...prev].slice(0, MAX_LOG_ENTRIES));
+    },
+    [],
+  );
 
   const clearLog = useCallback(() => setLiftLog([]), []);
 
@@ -141,7 +145,9 @@ function App(): React.JSX.Element {
         </View>
         <View style={styles.logSection}>
           <View style={styles.logHeader}>
-            <Text style={styles.logHeaderTitle}>onSubjectLifted ({liftLog.length})</Text>
+            <Text style={styles.logHeaderTitle}>
+              onSubjectLifted ({liftLog.length})
+            </Text>
             {liftLog.length > 0 ? (
               <Text style={styles.clearBtn} onPress={clearLog}>
                 Clear

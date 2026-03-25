@@ -76,6 +76,10 @@
     "src/**/*.{ts,tsx}": [
       "prettier --write",
       "eslint --fix --max-warnings 0"
+    ],
+    "example/**/*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix --max-warnings 0 -c example/.eslintrc.js --resolve-plugins-relative-to example"
     ]
   },
   "jest": {
